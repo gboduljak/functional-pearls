@@ -57,5 +57,7 @@ You can find implementations of all combinators in [Combinators.hs](https://gith
 
 Using them, the following parsers are defined:
 * [Balanced parenthesis parser](https://github.com/gboduljak/functional-pearls/blob/master/monadic-parsing/src/BalancedParenthesis.hs)
-* [JSON parser](https://github.com/gboduljak/functional-pearls/blob/master/monadic-parsing/src/JSON.hs])
-* [Calculator](https://github.com/gboduljak/functional-pearls/blob/master/monadic-parsing/src/Arith.hs])
+* [JSON parser](https://github.com/gboduljak/functional-pearls/blob/master/monadic-parsing/src/JSON.hs)
+* [Calculator](https://github.com/gboduljak/functional-pearls/blob/master/monadic-parsing/src/Arith.hs)
+
+To try them, you can run ```stack run``` in the root of ```monadic-parsing``` folder. There is a [small program](https://github.com/gboduljak/functional-pearls/blob/master/monadic-parsing/app/Main.hs) which exposes all of them in 'raw' form :)
