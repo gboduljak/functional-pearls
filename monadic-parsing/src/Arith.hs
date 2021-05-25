@@ -35,29 +35,36 @@ mulop = mul <|> div
 factor :: Parser Double
 factor = negativeFactor <|> parensExpr <|> number
   where
-    negativeFactor = do { symbol "-"; fmap negate factor }
+    negativeFactor = do { symbol "-"; negate <$> factor }
     parensExpr = do { symbol "("; x <- expr; symbol ")"; return x }
 
 digit :: Parser Int
 digit = do {
   d <- sat isDigit;
-  return (ord d - ord '0')
+  return (digitToInt d)
 }
 
 integer :: Parser Int
 integer = do {
   spaces;
-  ds <- many digit;
-  if not $ null ds then return (asInt ds) else failure
+  d <- digitToInt <$> sat isDigit;
+  if d == 0 
+    then 
+      return 0 
+    else 
+      do {
+        ds <- many0 digit;
+        return (asInt (d:ds));
+      }
 }
   where asInt ds = sum [ d * (10^p) | (d, p) <- zip (reverse ds) [0..] ]
 
 number :: Parser Double
-number = withDecimal <|> withoutDecimal
+number = withDecimalPt <|> withoutDecimalPt
   where
-    withoutDecimal = fmap fromIntegral integer
-    withDecimal = do {
-      wholePart <- withoutDecimal;
+    withoutDecimalPt = fromIntegral <$> integer
+    withDecimalPt = do {
+      wholePart <- withDecimalPt;
       char '.';
       fractionalPart <- fmap asFracPt (many digit);
       return (wholePart + fractionalPart)

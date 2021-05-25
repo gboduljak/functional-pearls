@@ -35,7 +35,6 @@ main = do {
           jsonIo = do {
             putStrLn "Enter a string of json...";
             result <- fmap (apply json) getLine;
-
             case result of 
               [(parsedJson, "")] -> do {
                 print parsedJson;
@@ -50,7 +49,6 @@ main = do {
           calculatorIo = do {
             putStrLn "Enter an arithmetic expression to evaluate...";
             result <- fmap (apply expr) getLine;
-            
             case result of 
               [(value, "")] -> do {
                 print value;

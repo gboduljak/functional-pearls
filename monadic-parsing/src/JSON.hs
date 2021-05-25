@@ -2,7 +2,7 @@ module JSON
 where
 import Control.Applicative (Applicative(..), Alternative(..))
 import Control.Monad       (Monad(..), when)
-import Data.Char (isDigit, ord )
+import Data.Char (isDigit, ord, digitToInt )
 import Data.List
 import Parser (Parser(..), parse, zero)
 import Combinators(
@@ -90,14 +90,27 @@ jsonDouble = do {
   where asFracPt ds = sum [ fromIntegral d * (10 ** (-p))| (d, p) <- zip ds [1..] ]
 
 digit :: Parser Int
-digit = do { 
-  d <- sat isDigit; 
-  return (ord d - ord '0')
+digit = do {
+  d <- sat isDigit;
+  return (digitToInt d)
 }
 
-integer :: Parser Int 
+integer :: Parser Int
 integer = do {
-  ds <- many digit;
-  if not $ null ds then return (asInt ds) else failure
+  spaces;
+  s <- sign;
+  d <- digitToInt <$> sat isDigit;
+  if d == 0 
+    then 
+      return 0 
+    else 
+      do {
+        ds <- many0 digit;
+        return (s * asInt (d:ds));
+      }
 }
-  where asInt ds = sum [ d * (10^p) | (d, p) <- zip (reverse ds) [0..] ]
+  where sign :: Parser Int
+        sign = do { symbol "+"; return 1; }    <|>
+               do { symbol "-"; return (-1); } <|>
+               do { return 1; }
+        asInt ds = sum [ d * (10^p) | (d, p) <- zip (reverse ds) [0..] ]

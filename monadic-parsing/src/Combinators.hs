@@ -82,7 +82,7 @@ p `sepBy0` sep = p `sepBy1` sep <|> return []
 sepBy1 :: Parser a -> Parser b -> Parser [a]
 p `sepBy1` sep = do {
   a <- p;
-  as <- many (do { sep; p });
+  as <- many0 (do { sep; p });
   return (a:as)
 }
 
